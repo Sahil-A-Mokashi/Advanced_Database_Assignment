@@ -208,3 +208,90 @@ VALUES
 GO
 
 /*--------------------------------------------------------------------------------------------------------*/
+/*==========================================================
+INSERT DATA : Products
+
+Source:
+Product catalogue inspired by publicly available employee
+rewards platforms and retail catalogues including:
+
+- Awardco
+- Reward Gateway
+- Amazon UK
+- Logitech
+- Dell
+- Apple
+- JBL
+- Anker
+
+Prices are approximate retail values and are used only
+for educational purposes.
+==========================================================*/
+
+INSERT INTO Products
+(
+    ProductName,
+    SKU,
+    CashPrice,
+    PointsPrice,
+    StockQuantity,
+    IsActive
+)
+VALUES
+
+('Logitech MX Master 3S Mouse','PP001',95.00,950,35,1),
+('Logitech K380 Keyboard','PP002',42.00,420,40,1),
+('Sony WH-CH720N Headphones','PP003',109.00,1090,20,1),
+('JBL Flip 6 Bluetooth Speaker','PP004',119.00,1190,18,1),
+('Apple AirTag','PP005',39.00,390,60,1),
+('Stanley Quencher Tumbler','PP006',45.00,450,45,1),
+('Anker Power Bank 20000mAh','PP007',49.00,490,32,1),
+('Dell EcoLoop Backpack','PP008',59.00,590,24,1),
+('Kindle Paperwhite','PP009',169.00,1690,15,1),
+('Garmin Vivosmart 5','PP010',189.00,1890,10,1),
+
+('Logitech Brio Webcam','PP011',129.00,1290,22,1),
+('BenQ ScreenBar Monitor Lamp','PP012',109.00,1090,18,1),
+('Samsung T7 Portable SSD 1TB','PP013',119.00,1190,26,1),
+('Logitech G305 Gaming Mouse','PP014',49.00,490,34,1),
+('SteelSeries QcK Mouse Pad','PP015',20.00,200,55,1),
+('Herman Miller Office Chair Voucher','PP016',250.00,2500,8,1),
+('Dell 24-inch Monitor','PP017',179.00,1790,16,1),
+('Anker USB-C Hub','PP018',55.00,550,38,1),
+('Moleskine Notebook Set','PP019',25.00,250,60,1),
+('Hydro Flask Water Bottle','PP020',35.00,350,50,1),
+
+('Amazon Gift Card €25','PP021',25.00,250,120,1),
+('Amazon Gift Card €50','PP022',50.00,500,100,1),
+('Apple Gift Card €100','PP023',100.00,1000,80,1),
+('Google Play Gift Card','PP024',30.00,300,75,1),
+('Spotify Premium 12 Months','PP025',120.00,1200,40,1),
+('Netflix Gift Card','PP026',60.00,600,55,1),
+('Disney+ Annual Subscription','PP027',90.00,900,30,1),
+('Fitbit Inspire 3','PP028',99.00,990,18,1),
+('Apple Watch SE','PP029',299.00,2990,12,1),
+('Samsung Galaxy Buds FE','PP030',89.00,890,25,1),
+
+('LEGO Creator Set','PP031',65.00,650,22,1),
+('Nintendo Switch Controller','PP032',69.00,690,28,1),
+('Xbox Wireless Controller','PP033',64.00,640,26,1),
+('PlayStation DualSense Controller','PP034',74.00,740,20,1),
+('Coffee Hamper','PP035',35.00,350,40,1),
+('Tea Hamper','PP036',32.00,320,38,1),
+('Luxury Chocolate Gift Box','PP037',28.00,280,48,1),
+('Bluetooth Tracker Pack','PP038',55.00,550,20,0),
+('Portable Desk Fan','PP039',30.00,300,35,1),
+('Wireless Charging Stand','PP040',45.00,450,27,1),
+
+('Laptop Stand','PP041',39.00,390,45,1),
+('Desk Organizer Kit','PP042',25.00,250,50,1),
+('Smart LED Desk Lamp','PP043',55.00,550,25,1),
+('Bose SoundLink Flex','PP044',149.00,1490,14,1),
+('Instant Camera','PP045',89.00,890,15,1),
+('Travel Gift Set','PP046',45.00,450,24,0),
+('Premium Pen Set','PP047',55.00,550,30,1),
+('Wireless Presenter','PP048',42.00,420,28,1),
+('Noise Cancelling Earbuds','PP049',129.00,1290,16,1),
+('PointPay Premium Gift Hamper','PP050',150.00,1500,10,0);
+
+GO
