@@ -2,7 +2,7 @@
 UDF : Calculate Order Total
 ==========================================================*/
 
-CREATE FUNCTION dbo.udf_CalculateOrderTotal
+CREATE OR ALTER FUNCTION dbo.udf_CalculateOrderTotal
 (
     @OrderID INT
 )
@@ -26,7 +26,7 @@ GO
 UDF : Calculate Wallet Balance
 ==========================================================*/
 
-CREATE FUNCTION dbo.udf_GetWalletBalance
+CREATE OR ALTER FUNCTION dbo.udf_GetWalletBalance
 (
     @WalletID INT
 )
@@ -58,7 +58,7 @@ GO
 UDF : Check Product Availability
 ==========================================================*/
 
-CREATE FUNCTION dbo.udf_IsProductAvailable
+CREATE OR ALTER FUNCTION dbo.udf_IsProductAvailable
 (
     @ProductID INT,
     @RequiredQuantity INT
