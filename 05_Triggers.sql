@@ -72,9 +72,3 @@ BEGIN
     FROM inserted;
 END;
 GO
-/*---------------------------------------------------------
-Initialize all order prices using the above created trigger 
-    --------------------------------------------------------*/
-UPDATE OrderItems
-SET Quantity = Quantity;
-GO
