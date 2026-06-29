@@ -113,7 +113,8 @@ BEGIN
         ON I.EmployeeID = W.EmployeeID
     WHERE
         D.ReturnStatus <> 'Approved'
-        AND I.ReturnStatus = 'Approved';
+        AND I.ReturnStatus = 'Approved'
+        AND I.RefundPoints > 0;
 
 END;
 GO
