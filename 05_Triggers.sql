@@ -72,3 +72,48 @@ BEGIN
     FROM inserted;
 END;
 GO
+
+
+/*==========================================================
+TRIGGER : Process Approved Return
+Automatically creates a wallet refund transaction when
+a return request is approved.
+==========================================================*/
+
+CREATE TRIGGER trg_ProcessApprovedReturn
+ON Returns
+AFTER UPDATE
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    INSERT INTO WalletTransactions
+    (
+        WalletID,
+        EmployeeID,
+        OrderID,
+        TransactionType,
+        TransactionSource,
+        Points,
+        TransactionStatus
+    )
+    SELECT
+        W.WalletID,
+        I.EmployeeID,
+        I.OrderID,
+        'Refund',
+        'Return',
+        I.RefundPoints,
+        'Completed'
+    FROM inserted I
+    INNER JOIN deleted D
+        ON I.ReturnID = D.ReturnID
+    INNER JOIN Wallets W
+        ON I.EmployeeID = W.EmployeeID
+    WHERE
+        D.ReturnStatus <> 'Approved'
+        AND I.ReturnStatus = 'Approved';
+
+END;
+GO
