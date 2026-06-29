@@ -2,7 +2,7 @@
 TRIGGER : Update Order Total
 ==========================================================*/
 
-CREATE TRIGGER trg_UpdateOrderTotal
+CREATE OR ALTER TRIGGER trg_UpdateOrderTotal
 ON OrderItems
 AFTER INSERT, UPDATE, DELETE
 AS
@@ -32,7 +32,7 @@ GO
 TRIGGER : Check Product Availability
 ==========================================================*/
 
-CREATE TRIGGER trg_CheckProductAvailability
+CREATE OR ALTER TRIGGER trg_CheckProductAvailability
 ON OrderItems
 INSTEAD OF INSERT
 AS
@@ -79,13 +79,11 @@ TRIGGER : Process Approved Return
 Automatically creates a wallet refund transaction when
 a return request is approved.
 ==========================================================*/
-
-CREATE TRIGGER trg_ProcessApprovedReturn
+CREATE OR ALTER TRIGGER trg_ProcessApprovedReturn
 ON Returns
 AFTER UPDATE
 AS
 BEGIN
-
     SET NOCOUNT ON;
 
     INSERT INTO WalletTransactions
@@ -104,17 +102,34 @@ BEGIN
         I.OrderID,
         'Refund',
         'Return',
-        I.RefundPoints,
+
+        CASE
+            WHEN O.PaymentMethod='Cash'
+                THEN CAST(O.TotalAmount * 10 AS INT)
+
+            WHEN O.PaymentMethod='Points'
+                THEN CAST(O.TotalAmount * 10 AS INT)
+
+            WHEN O.PaymentMethod='Mixed'
+                THEN CAST((O.TotalAmount/2.0)*10 AS INT)
+        END,
+
         'Completed'
+
     FROM inserted I
+
     INNER JOIN deleted D
-        ON I.ReturnID = D.ReturnID
+        ON I.ReturnID=D.ReturnID
+
+    INNER JOIN Orders O
+        ON I.OrderID=O.OrderID
+
     INNER JOIN Wallets W
-        ON I.EmployeeID = W.EmployeeID
+        ON I.EmployeeID=W.EmployeeID
+
     WHERE
-        D.ReturnStatus <> 'Approved'
-        AND I.ReturnStatus = 'Approved'
-        AND I.RefundPoints > 0;
+        D.ReturnStatus<>'Approved'
+        AND I.ReturnStatus='Approved';
 
 END;
 GO
