@@ -133,3 +133,30 @@ SELECT dbo.udf_IsProductAvailable(1,2);
 ```
 
 All functions were successfully tested after creation.
+
+
+# STEP 5 - Create Triggers
+
+FILE - **05_Triggers.sql**
+
+What this does:
+
+Creates SQL Server triggers used to automate business rules
+within the PointPay database.
+
+Triggers created:
+
+1. trg_UpdateOrderTotal
+   Automatically recalculates an order's total whenever
+   products are added, modified or removed from OrderItems.
+
+2. trg_CheckProductAvailability
+   Prevents inactive or out-of-stock products from being
+   added to an order.
+
+3. trg_ProcessApprovedReturn
+   Automatically updates wallet transactions when a return
+   request is approved.
+
+These triggers improve data consistency by automatically
+maintaining derived values and enforcing business rules.
