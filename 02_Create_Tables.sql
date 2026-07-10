@@ -284,9 +284,7 @@ CREATE TABLE Returns
                 'Approved',
                 'Rejected'
             )
-        ),
-    CONSTRAINT CHK_Return_Status
-        CHECK (ReturnStatus IN ('Pending','Approved','Rejected'))
+        )
 );
 
 GO
