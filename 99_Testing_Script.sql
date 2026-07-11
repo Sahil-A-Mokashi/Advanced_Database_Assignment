@@ -27,7 +27,6 @@ PRINT '========== UDF : Calculate Order Total ==========';
 
 SELECT
 OrderID,
-TotalAmount,
 dbo.udf_CalculateOrderTotal(OrderID) AS CalculatedTotal
 FROM Orders
 WHERE OrderID<=10;
@@ -40,10 +39,10 @@ TotalAmount = CalculatedTotal   */
 PRINT '========== UDF : Wallet Balance ==========';
 
 SELECT
-EmployeeID,
-dbo.udf_GetWalletBalance(EmployeeID) AS WalletBalance
-FROM Employees
-WHERE EmployeeID<=10;
+WalletID,
+dbo.udf_GetWalletBalance(WalletID) AS WalletBalance
+FROM Wallets
+WHERE WalletID <= 10;
 
 /* 
 actual balances
@@ -66,29 +65,41 @@ WHERE ProductID<=10;
 
 /* -----------------------------------------------------------------------------------------------------------------*/
 PRINT '========== Trigger 1 ==========';
--- TotalAmount increases automatically.
-SELECT
-OrderID,
-TotalAmount
-FROM Orders
-WHERE OrderID=1;
-
-UPDATE OrderItems
-SET Quantity=Quantity+1
-WHERE OrderItemID=1;
-
+-- Check stock before
 
 SELECT
-OrderID,
-TotalAmount
-FROM Orders
-WHERE OrderID=1;
+ProductID,
+StockQuantity
+FROM Products
+WHERE ProductID=1;
 
--- reset the change 
+-- Increase quantity by 1
+
 UPDATE OrderItems
-SET Quantity=Quantity-1
-WHERE OrderItemID=1;
+SET Quantity = Quantity + 1
+WHERE OrderItemID = 1;
 
+-- Stock should decrease by 1
+
+SELECT
+ProductID,
+StockQuantity
+FROM Products
+WHERE ProductID=1;
+
+-- Restore original quantity
+
+UPDATE OrderItems
+SET Quantity = Quantity - 1
+WHERE OrderItemID = 1;
+
+-- Stock should return to original value
+
+SELECT
+ProductID,
+StockQuantity
+FROM Products
+WHERE ProductID=1;
 /* -----------------------------------------------------------------------------------------------------------------*/
 PRINT '========== Trigger 2 ==========';
 -- deactivate a product
@@ -191,23 +202,9 @@ VALUES
 PRINT '========== CHECK Constraint ==========';
 
 INSERT INTO Returns
-(
-OrderID,
-EmployeeID,
-ReturnReason,
-RefundPoints,
-ReturnStatus,
-RequestDate
-)
+(OrderID,EmployeeID,ReturnReason,ReturnStatus,RequestDate)
 VALUES
-(
-1,
-1,
-'Testing',
-100,
-'InvalidStatus',
-GETDATE()
-);
+(1,1,'Testing','InvalidStatus',GETDATE());
 
 -- CHECK constraint violation.
 
