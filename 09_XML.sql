@@ -7,7 +7,8 @@ USE PointPay;
 GO
 
 /*==========================================================
-1 .XML Order Example
+XML Example 1
+Create an Order using XML
 ==========================================================*/
 
 DECLARE @OrderItems XML =
@@ -42,7 +43,7 @@ EXEC sp_PlaceOrder
 GO
 
 /*==========================================================
-Display Newly Created Order
+View the Newly Created Order
 ==========================================================*/
 
 SELECT TOP 1
@@ -59,7 +60,7 @@ ORDER BY OrderID DESC;
 GO
 
 /*==========================================================
-Display Order Items
+View the Newly Created Order Items
 ==========================================================*/
 
 SELECT TOP 10
@@ -76,7 +77,8 @@ GO
 
 
 /*==========================================================
-2. Generate Employee Orders as XML
+XML Example 2
+Generate Orders as XML
 ==========================================================*/
 
 SELECT
@@ -85,24 +87,49 @@ SELECT
     E.FullName,
     O.PaymentMethod,
     O.OrderStatus,
-    dbo.udf_CalculateOrderTotal(O.OrderID) AS OrderTotal
+    dbo.udf_CalculateOrderTotal(O.OrderID) AS OrderTotal,
+    O.OrderDate
 FROM Orders O
 INNER JOIN Employees E
     ON O.EmployeeID = E.EmployeeID
 FOR XML PATH('Order'), ROOT('Orders');
+
 GO
 
+
 /*==========================================================
-3. Generate Product Catalogue XML
+XML Example 3
+Generate Product Catalogue as XML
 ==========================================================*/
 
 SELECT
     ProductID,
     ProductName,
+    SKU,
     CashPrice,
     PointsPrice,
-    StockQuantity
+    StockQuantity,
+    IsActive
 FROM Products
-WHERE IsActive = 1
 FOR XML PATH('Product'), ROOT('Products');
+
+GO
+
+
+/*==========================================================
+XML Example 4
+Generate Wallet Transactions for an Employee as XML
+==========================================================*/
+
+SELECT
+    WT.TransactionID,
+    WT.TransactionType,
+    WT.TransactionSource,
+    WT.Points,
+    WT.TransactionStatus,
+    WT.CreatedAt
+FROM WalletTransactions WT
+WHERE WT.EmployeeID = 1
+FOR XML PATH('Transaction'), ROOT('WalletTransactions');
+
 GO
