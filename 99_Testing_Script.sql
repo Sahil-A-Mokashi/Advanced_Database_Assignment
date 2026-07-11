@@ -269,3 +269,140 @@ SELECT
 (SELECT COUNT(*) FROM WalletTransactions) AS WalletTransactions,
 
 (SELECT COUNT(*) FROM Returns) AS Returns;
+
+
+
+/* -----------------------------------------------------------------------------------------------------------------*/
+PRINT '========== STORED PROCEDURES ==========';
+
+/*---------------------------------------
+Place Order using XML
+---------------------------------------*/
+
+DECLARE @OrderItems XML =
+'
+<OrderItems>
+
+    <Item>
+        <ProductID>2</ProductID>
+        <Quantity>1</Quantity>
+    </Item>
+
+    <Item>
+        <ProductID>5</ProductID>
+        <Quantity>2</Quantity>
+    </Item>
+
+</OrderItems>';
+
+EXEC sp_PlaceOrder
+    @EmployeeID = 1,
+    @PaymentMethod = 'Mixed',
+    @CashPaid = 100,
+    @PointsUsed = 500,
+    @OrderStatus = 'Pending',
+    @OrderItems = @OrderItems;
+
+GO
+
+/*---------------------------------------
+Approve Return
+---------------------------------------*/
+
+EXEC sp_ApproveReturn
+    @ReturnID =
+    (
+        SELECT TOP 1 ReturnID
+        FROM Returns
+        WHERE ReturnStatus='Pending'
+        ORDER BY ReturnID
+    ),
+    @ApprovedBy = 1;
+
+GO
+
+/*---------------------------------------
+Redeem Points
+---------------------------------------*/
+
+EXEC sp_RedeemPoints
+    @WalletID = 1,
+    @Points = 500;
+
+GO
+
+
+/* -----------------------------------------------------------------------------------------------------------------*/
+PRINT '========== VIEWS ==========';
+
+SELECT TOP 5 *
+FROM vw_EmployeeWalletSummary;
+
+SELECT TOP 5 *
+FROM vw_OrderSummary;
+
+SELECT TOP 5 *
+FROM vw_ProductInventory;
+
+SELECT TOP 5 *
+FROM vw_ReturnSummary;
+
+GO
+
+
+/* -----------------------------------------------------------------------------------------------------------------*/
+PRINT '========== XML ==========';
+
+/* Orders as XML */
+
+SELECT
+    O.OrderID,
+    O.OrderNumber,
+    E.FullName,
+    dbo.udf_CalculateOrderTotal(O.OrderID) AS OrderTotal
+FROM Orders O
+JOIN Employees E
+ON O.EmployeeID = E.EmployeeID
+FOR XML PATH('Order'), ROOT('Orders');
+
+GO
+
+/* Products as XML */
+
+SELECT
+    ProductID,
+    ProductName,
+    CashPrice,
+    PointsPrice
+FROM Products
+FOR XML PATH('Product'), ROOT('Products');
+
+GO
+
+
+/* -----------------------------------------------------------------------------------------------------------------*/
+PRINT '========== INNOVATION ==========';
+
+/* Wallet Before */
+
+SELECT
+    WalletID,
+    dbo.udf_GetWalletBalance(WalletID) AS WalletBalance
+FROM Wallets
+WHERE WalletID = 1;
+
+/* Redeem */
+
+EXEC sp_RedeemPoints
+    @WalletID = 1,
+    @Points = 250;
+
+/* Wallet After */
+
+SELECT
+    WalletID,
+    dbo.udf_GetWalletBalance(WalletID) AS WalletBalance
+FROM Wallets
+WHERE WalletID = 1;
+
+GO
