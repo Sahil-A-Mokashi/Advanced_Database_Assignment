@@ -153,16 +153,7 @@ INSERT DATA : Products
 
 Source:
 Product catalogue inspired by publicly available employee
-rewards platforms and retail catalogues including:
-
-- Awardco
-- Reward Gateway
-- Amazon UK
-- Logitech
-- Dell
-- Apple
-- JBL
-- Anker
+rewards platforms and retail catalogues including.
 
 Prices are approximate retail values and are used only
 for educational purposes.
