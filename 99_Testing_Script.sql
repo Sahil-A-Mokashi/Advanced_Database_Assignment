@@ -302,14 +302,17 @@ GO
 Approve Return
 ---------------------------------------*/
 
+
+DECLARE @ReturnID INT;
+
+SELECT TOP 1
+    @ReturnID = ReturnID
+FROM Returns
+WHERE ReturnStatus = 'Pending'
+ORDER BY ReturnID;
+
 EXEC sp_ApproveReturn
-    @ReturnID =
-    (
-        SELECT TOP 1 ReturnID
-        FROM Returns
-        WHERE ReturnStatus='Pending'
-        ORDER BY ReturnID
-    ),
+    @ReturnID = @ReturnID,
     @ApprovedBy = 1;
 
 GO
