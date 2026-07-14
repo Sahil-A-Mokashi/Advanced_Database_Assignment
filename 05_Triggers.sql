@@ -44,17 +44,21 @@ BEGIN
 
     IF EXISTS
     (
-        SELECT 1
-        FROM inserted i
-        WHERE dbo.udf_IsProductAvailable(i.ProductID, i.Quantity) = 0
+        SELECT *
+        FROM inserted I
+        JOIN Products P
+            ON I.ProductID = P.ProductID
+        WHERE
+            P.IsActive = 0
+            OR P.StockQuantity < I.Quantity
     )
     BEGIN
-        RAISERROR(
-        'Product is inactive or insufficient stock is available.',
-        16,
-        1
+        RAISERROR
+        (
+            'Product is inactive or insufficient stock is available.',
+            16,
+            1
         );
-
         RETURN;
     END
 
@@ -73,6 +77,7 @@ BEGIN
         UnitCashPrice,
         UnitPointsPrice
     FROM inserted;
+
 END;
 GO
 
@@ -102,6 +107,7 @@ BEGIN
         Points,
         TransactionStatus
     )
+
     SELECT
         W.WalletID,
         I.EmployeeID,
@@ -110,32 +116,25 @@ BEGIN
         'Return',
 
         CASE
-            WHEN O.PaymentMethod='Cash'
-                THEN CAST(dbo.udf_CalculateOrderTotal(O.OrderID) * 10 AS INT)
-        
-            WHEN O.PaymentMethod='Points'
-                THEN CAST(dbo.udf_CalculateOrderTotal(O.OrderID) * 10 AS INT)
-        
-            WHEN O.PaymentMethod='Mixed'
+            WHEN O.PaymentMethod = 'Mixed'
                 THEN CAST((dbo.udf_CalculateOrderTotal(O.OrderID) / 2.0) * 10 AS INT)
+            ELSE
+                CAST(dbo.udf_CalculateOrderTotal(O.OrderID) * 10 AS INT)
         END,
 
         'Completed'
 
     FROM inserted I
-
-    INNER JOIN deleted D
-        ON I.ReturnID=D.ReturnID
-
-    INNER JOIN Orders O
-        ON I.OrderID=O.OrderID
-
-    INNER JOIN Wallets W
-        ON I.EmployeeID=W.EmployeeID
+    JOIN deleted D
+        ON I.ReturnID = D.ReturnID
+    JOIN Orders O
+        ON O.OrderID = I.OrderID
+    JOIN Wallets W
+        ON W.EmployeeID = I.EmployeeID
 
     WHERE
-        D.ReturnStatus<>'Approved'
-        AND I.ReturnStatus='Approved';
+        D.ReturnStatus <> 'Approved'
+        AND I.ReturnStatus = 'Approved';
 
 END;
 GO
