@@ -78,9 +78,6 @@ BEGIN
     WHERE ProductID = @ProductID
       AND IsActive = 1;
 
-    IF @Available IS NULL
-        RETURN 0;
-
     IF @Available >= @RequiredQuantity
         RETURN 1;
 
